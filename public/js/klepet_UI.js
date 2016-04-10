@@ -142,13 +142,12 @@ function dodajSmeske(vhodnoBesedilo) {
   return vhodnoBesedilo;
 }
 
-
 function dodajSlike(sporocilo) {  
 
-  var linki = sporocilo.match(new RegExp(/(http:\/\/|https:\/\/)\S+(\.jpg|.png|.gif)/, 'gi'));
+  var besede = sporocilo.match(new RegExp(/(http:\/\/|https:\/\/)\S+(\.jpg|.png|.gif)/, 'gi'));
   
-  for(var i in linki) {
-     $('#sporocila').append('<img src="' + linki[i] + '" id="fotografija"/>');
+  for(var i in besede) {
+     $('#sporocila').append('<img src="' + besede[i] + '" id="fotografija"/>');
   }  
 }  
 
