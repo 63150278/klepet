@@ -1,5 +1,6 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
+<<<<<<< HEAD
   var jeSlika = (sporocilo.match(/http:/gi) || sporocilo.match(/https:/gi)) && (sporocilo.match(/.jpg/gi) || sporocilo.match(/.png/gi) || sporocilo.match(/.gif/gi));
   if (jeSmesko) {
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
@@ -12,6 +13,19 @@ function divElementEnostavniTekst(sporocilo) {
   
   else {
       return $('<div style="font-weight: bold;"></div>').text(sporocilo);
+=======
+  var jeVideo = sporocilo.indexOf('https://www.youtube.com/watch?v=') > -1;
+  
+  if (jeSmesko) {
+    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  else if(jeVideo) {
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  else {
+    return $('<div style="font-weight: bold;"></div>').text(sporocilo);
+>>>>>>> youtube
   }
 }
 
@@ -30,6 +44,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     if (sistemskoSporocilo) {
       $('#sporocila').append(divElementHtmlTekst(sistemskoSporocilo));
       sporocilo = dodajSlike(sporocilo);
+      sporocilo = dodajanjeVidea(sporocilo);
     }
   } else {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
@@ -37,6 +52,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
     sporocilo = dodajSlike(sporocilo);
+    sporocilo = dodajanjeVidea(sporocilo);
   }
 
   $('#poslji-sporocilo').val('');
@@ -87,6 +103,7 @@ $(document).ready(function() {
     var novElement = divElementEnostavniTekst(sporocilo.besedilo);
     $('#sporocila').append(novElement);
     sporocilo = dodajSlike(sporocilo.besedilo);
+    sporocilo = dodajanjeVidea(sporocilo.besedilo);
   });
   
   socket.on('kanali', function(kanali) {
@@ -158,4 +175,12 @@ function dodajSlike(sporocilo) {
   }  
 }  
 
-
+function dodajanjeVidea(sporocilo) {
+  var videi = sporocilo.match(new RegExp(/(https:\/\/www.youtube.com\/watch\?v=\S+)/, 'gi')); 
+  
+  for(var i in videi) {
+    var koncnica = videi[i].substring(32);
+    
+     $('#sporocila').append("<iframe src='https://www.youtube.com/embed/"+koncnica+"' allowfullscreen id='video'></iframe>");
+  }
+}
